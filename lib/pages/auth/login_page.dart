@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import '../../../data/datasource/local_user.dart';
 import '../../../config/app_routes.dart';
 import '../../../utils/validators.dart';
+import '../../../widgets/custom_input.dart';
+import '../../../widgets/custom_button.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -55,7 +57,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       backgroundColor: Colors.white,
 
-      // HILANGKAN TOMBOL KEMBALI
       appBar: AppBar(
         automaticallyImplyLeading: false,
         elevation: 0,
@@ -70,7 +71,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
               const SizedBox(height: 10),
 
-              // ====================== LOGO ======================
+              // LOGO 
               SizedBox(
                 height: 150,
                 child: Image.asset(
@@ -81,12 +82,13 @@ class _LoginPageState extends State<LoginPage> {
 
               const SizedBox(height: 10),
 
-              // ====================== TITLE ======================
+              // TITLE
               Text(
-                "Selamat Datang di Go-Healthy ",
+                "Selamat Datang di Go-Healthy",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   color: Colors.blue.shade700,
-                  fontSize: 23,
+                  fontSize: 30,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -97,97 +99,63 @@ class _LoginPageState extends State<LoginPage> {
                 "Silakan masuk dengan akun Anda",
                 style: TextStyle(
                   color: Colors.grey.shade700,
-                  fontSize: 14,
+                  fontSize: 16,
                 ),
               ),
 
               const SizedBox(height: 30),
 
-              // ====================== USERNAME FIELD ======================
-              TextFormField(
+              // CUSTOM INPUT USERNAME
+              CustomInput(
                 controller: _usernameController,
-                decoration: InputDecoration(
-                  labelText: "Username",
-                  prefixIcon: const Icon(Icons.person),
-                  filled: true,
-                  fillColor: Colors.blue.shade50.withOpacity(0.3),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
+                label: "Username",
+                icon: Icons.person,
                 validator: Validators.validateUsername,
               ),
 
               const SizedBox(height: 18),
 
-              // ====================== PASSWORD FIELD ======================
-              TextFormField(
+              // CUSTOM INPUT PASSWORD
+              CustomInput(
                 controller: _passwordController,
+                label: "Password",
+                icon: Icons.lock,
                 obscureText: _obscurePassword,
-                decoration: InputDecoration(
-                  labelText: "Password",
-                  prefixIcon: const Icon(Icons.lock),
-                  suffixIcon: IconButton(
-                    icon: Icon(
-                      _obscurePassword
-                          ? Icons.visibility_off
-                          : Icons.visibility,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        _obscurePassword = !_obscurePassword;
-                      });
-                    },
-                  ),
-                  filled: true,
-                  fillColor: Colors.blue.shade50.withOpacity(0.3),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                ),
                 validator: Validators.validatePassword,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
               ),
 
               const SizedBox(height: 15),
 
               if (_errorMessage != null)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: Text(
-                    _errorMessage!,
-                    style: const TextStyle(color: Colors.red),
-                  ),
+                Text(
+                  _errorMessage!,
+                  style: const TextStyle(color: Colors.red),
                 ),
 
-              const SizedBox(height: 10),
+              const SizedBox(height: 20),
 
-              // ====================== LOGIN BUTTON ======================
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue.shade700,
-                    padding: const EdgeInsets.symmetric(vertical: 14),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text(
-                          "Login",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                ),
+              // CUSTOM BUTTON LOGIN
+              CustomButton(
+                text: "Login",
+                loading: _isLoading,
+                onPressed: _login,
               ),
 
               const SizedBox(height: 20),
 
-              // ====================== REGISTER LINK ======================
+              // LINK TO REGISTER
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
