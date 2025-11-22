@@ -4,6 +4,8 @@ import '../../../data/models/user_model.dart';
 import '../../../data/datasource/local_user.dart';
 import '../../../config/app_routes.dart';
 import '../../../utils/validators.dart';
+import '../../../widgets/custom_input.dart';
+import '../../../widgets/custom_button.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -23,6 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final _passwordController = TextEditingController();
 
   bool _isLoading = false;
+  bool _obscurePassword = true;
 
   Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
@@ -44,102 +47,105 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() => _isLoading = false);
 
     if (!mounted) return;
-    Navigator.pop(context); // kembali ke login page
+    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
+
       appBar: AppBar(
         title: const Text("Daftar Akun"),
+        backgroundColor: Colors.blue.shade700,
+        foregroundColor: Colors.white,
       ),
+
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
-              
-              // NAMA LENGKAP
-              TextFormField(
+              CustomInput(
                 controller: _namaController,
-                decoration: const InputDecoration(
-                  labelText: "Nama Lengkap",
-                  border: OutlineInputBorder(),
-                ),
+                label: "Nama Lengkap",
+                icon: Icons.person,
                 validator: Validators.validateName,
               ),
               const SizedBox(height: 15),
 
-              // EMAIL
-              TextFormField(
+              CustomInput(
                 controller: _emailController,
-                decoration: const InputDecoration(
-                  labelText: "Email",
-                  border: OutlineInputBorder(),
-                ),
+                label: "Email",
+                icon: Icons.email,
                 validator: Validators.validateEmail,
               ),
               const SizedBox(height: 15),
 
-              // NOMOR TELEPON
+              // Nomor telepon pakai TextFormField biasa (karena perlu inputFormatters)
               TextFormField(
                 controller: _phoneController,
-                decoration: const InputDecoration(
-                  labelText: "Nomor Telepon",
-                  border: OutlineInputBorder(),
-                ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
                 validator: Validators.validatePhone,
+                decoration: InputDecoration(
+                  labelText: "Nomor Telepon",
+                  prefixIcon: const Icon(Icons.phone),
+                  filled: true,
+                  fillColor: Colors.blue.shade50.withOpacity(0.3),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                ),
               ),
               const SizedBox(height: 15),
 
-              // ALAMAT
-              TextFormField(
+              CustomInput(
                 controller: _alamatController,
-                maxLines: 2,
-                decoration: const InputDecoration(
-                  labelText: "Alamat Lengkap",
-                  border: OutlineInputBorder(),
-                ),
+                label: "Alamat Lengkap",
+                icon: Icons.home,
                 validator: Validators.validateAlamat,
               ),
               const SizedBox(height: 15),
 
-              // USERNAME
-              TextFormField(
+              CustomInput(
                 controller: _usernameController,
-                decoration: const InputDecoration(
-                  labelText: "Username",
-                  border: OutlineInputBorder(),
-                ),
+                label: "Username",
+                icon: Icons.account_circle,
                 validator: Validators.validateUsername,
               ),
               const SizedBox(height: 15),
 
-              // PASSWORD
-              TextFormField(
+              // Password dengan toggle visibility
+              CustomInput(
                 controller: _passwordController,
-                decoration: const InputDecoration(
-                  labelText: "Password",
-                  border: OutlineInputBorder(),
-                ),
-                obscureText: true,
+                label: "Password",
+                icon: Icons.lock,
+                obscureText: _obscurePassword,
                 validator: Validators.validatePassword,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword
+                        ? Icons.visibility_off
+                        : Icons.visibility,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
               ),
+
               const SizedBox(height: 25),
 
-              // TOMBOL DAFTAR
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _isLoading ? null : _register,
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text("Daftar"),
-                ),
+              CustomButton(
+                text: "Daftar",
+                loading: _isLoading,
+                onPressed: _register,
               ),
+
               const SizedBox(height: 12),
 
               TextButton(
