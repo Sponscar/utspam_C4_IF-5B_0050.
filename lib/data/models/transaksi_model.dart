@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 class TransaksiModel {
-  final String idTransaksi;
-  final String idObat;
+  final String id;
+  final String obatId;
   final String namaObat;
   final int jumlah;
   final int totalHarga;
   final String tanggal;
 
   TransaksiModel({
-    required this.idTransaksi,
-    required this.idObat,
+    required this.id,
+    required this.obatId,
     required this.namaObat,
     required this.jumlah,
     required this.totalHarga,
@@ -19,19 +19,19 @@ class TransaksiModel {
 
   factory TransaksiModel.fromMap(Map<String, dynamic> map) {
     return TransaksiModel(
-      idTransaksi: map['idTransaksi'] ?? '',
-      idObat: map['idObat'] ?? '',
-      namaObat: map['namaObat'] ?? '',
-      jumlah: map['jumlah'] ?? 0,
-      totalHarga: map['totalHarga'] ?? 0,
-      tanggal: map['tanggal'] ?? '',
+      id: map['id'],
+      obatId: map['obatId'],
+      namaObat: map['namaObat'],
+      jumlah: map['jumlah'],
+      totalHarga: map['totalHarga'],
+      tanggal: map['tanggal'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'idTransaksi': idTransaksi,
-      'idObat': idObat,
+      'id': id,
+      'obatId': obatId,
       'namaObat': namaObat,
       'jumlah': jumlah,
       'totalHarga': totalHarga,
@@ -43,7 +43,5 @@ class TransaksiModel {
     return TransaksiModel.fromMap(jsonDecode(json));
   }
 
-  String toJson() {
-    return jsonEncode(toMap());
-  }
+  String toJson() => jsonEncode(toMap());
 }
