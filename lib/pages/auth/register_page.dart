@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import '../../../data/models/user_model.dart';
 import '../../../data/datasource/local_user.dart';
 import '../../../config/app_routes.dart';
+import '../../../utils/validators.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -12,23 +13,24 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _nameController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
+
+  final _namaController = TextEditingController();
   final _emailController = TextEditingController();
   final _phoneController = TextEditingController();
   final _alamatController = TextEditingController();
   final _usernameController = TextEditingController();
   final _passwordController = TextEditingController();
 
-  final _formKey = GlobalKey<FormState>();
   bool _isLoading = false;
 
-  void _register() async {
+  Future<void> _register() async {
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
 
     final user = UserModel(
-      nama: _nameController.text,
+      nama: _namaController.text,
       email: _emailController.text,
       phone: _phoneController.text,
       alamat: _alamatController.text,
@@ -37,34 +39,35 @@ class _RegisterPageState extends State<RegisterPage> {
     );
 
     await LocalUser.saveUser(user);
-    await LocalUser.setLoggedIn(true);
+    await LocalUser.setLoggedIn(false);
 
     setState(() => _isLoading = false);
 
-    Navigator.pushReplacementNamed(context, AppRoutes.login);
+    if (!mounted) return;
+    Navigator.pop(context); // kembali ke login page
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Register")),
+      appBar: AppBar(
+        title: const Text("Daftar Akun"),
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Form(
           key: _formKey,
           child: Column(
             children: [
+              
               // NAMA LENGKAP
               TextFormField(
-                controller: _nameController,
+                controller: _namaController,
                 decoration: const InputDecoration(
                   labelText: "Nama Lengkap",
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Nama lengkap wajib diisi";
-                  return null;
-                },
+                validator: Validators.validateName,
               ),
               const SizedBox(height: 15),
 
@@ -75,13 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: "Email",
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Email wajib diisi";
-                  if (!RegExp(r'^[^@]+@[^@]+\.[^@]+').hasMatch(v)) {
-                    return "Format email tidak valid";
-                  }
-                  return null;
-                },
+                validator: Validators.validateEmail,
               ),
               const SizedBox(height: 15),
 
@@ -93,29 +90,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                 ),
                 keyboardType: TextInputType.number,
-                inputFormatters: [
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Nomor telepon wajib diisi";
-                  if (v.length < 10) return "Nomor telepon tidak valid";
-                  return null;
-                },
+                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+                validator: Validators.validatePhone,
               ),
               const SizedBox(height: 15),
 
               // ALAMAT
               TextFormField(
                 controller: _alamatController,
+                maxLines: 2,
                 decoration: const InputDecoration(
                   labelText: "Alamat Lengkap",
                   border: OutlineInputBorder(),
                 ),
-                maxLines: 2,
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Alamat wajib diisi";
-                  return null;
-                },
+                validator: Validators.validateAlamat,
               ),
               const SizedBox(height: 15),
 
@@ -126,27 +114,19 @@ class _RegisterPageState extends State<RegisterPage> {
                   labelText: "Username",
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Username wajib diisi";
-                  if (v.length < 4) return "Username minimal 4 karakter";
-                  return null;
-                },
+                validator: Validators.validateUsername,
               ),
               const SizedBox(height: 15),
 
               // PASSWORD
               TextFormField(
                 controller: _passwordController,
-                obscureText: true,
                 decoration: const InputDecoration(
                   labelText: "Password",
                   border: OutlineInputBorder(),
                 ),
-                validator: (v) {
-                  if (v == null || v.isEmpty) return "Password wajib diisi";
-                  if (v.length < 6) return "Password minimal 6 karakter";
-                  return null;
-                },
+                obscureText: true,
+                validator: Validators.validatePassword,
               ),
               const SizedBox(height: 25),
 
@@ -160,13 +140,10 @@ class _RegisterPageState extends State<RegisterPage> {
                       : const Text("Daftar"),
                 ),
               ),
-
               const SizedBox(height: 12),
 
               TextButton(
-                onPressed: () {
-                  Navigator.pushReplacementNamed(context, AppRoutes.login);
-                },
+                onPressed: () => Navigator.pop(context),
                 child: const Text("Sudah punya akun? Login"),
               ),
             ],
