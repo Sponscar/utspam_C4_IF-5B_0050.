@@ -3,37 +3,37 @@ import 'dart:convert';
 class ObatModel {
   final String id;
   final String nama;
+  final String kategori;
+  final String gambar;  // path asset
   final int harga;
-  final int stok;
-  final String deskripsi;
 
   ObatModel({
     required this.id,
     required this.nama,
+    required this.kategori,
+    required this.gambar,
     required this.harga,
-    required this.stok,
-    this.deskripsi = "",
   });
 
-  // Konversi MAP → ObatModel
+  // MAP → ObatModel
   factory ObatModel.fromMap(Map<String, dynamic> map) {
     return ObatModel(
       id: map['id'] ?? '',
       nama: map['nama'] ?? '',
+      kategori: map['kategori'] ?? '',
+      gambar: map['gambar'] ?? '',
       harga: map['harga'] ?? 0,
-      stok: map['stok'] ?? 0,
-      deskripsi: map['deskripsi'] ?? '',
     );
   }
 
-  // Konversi ObatModel → MAP
+  // ObatModel → MAP
   Map<String, dynamic> toMap() {
     return {
       'id': id,
       'nama': nama,
+      'kategori': kategori,
+      'gambar': gambar,
       'harga': harga,
-      'stok': stok,
-      'deskripsi': deskripsi,
     };
   }
 
