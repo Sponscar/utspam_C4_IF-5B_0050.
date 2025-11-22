@@ -50,12 +50,9 @@ class AppRouteGenerator {
 
       default:
         return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(
-              child: Text("404 - Page Not Found"),
-            ),
-          ),
-        );
+          builder: (_) => const LoginPage(),
+      );
+
     }
   }
 }
