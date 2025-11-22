@@ -1,0 +1,23 @@
+[33mcommit 58a8f16ea4ce4a7b2b37dd4ff6d6d2f283071987[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m)[m
+Author: Sponscar <panji.sabilillah23@student.uisi.ac.id>
+Date:   Sat Nov 22 11:30:17 2025 +0700
+
+    Menambahkan UserModel lengkap dengan Map dan JSON
+
+[33mcommit a1c972ad6c09216eea7afa67c43356925700bc99[m
+Author: Sponscar <panji.sabilillah23@student.uisi.ac.id>
+Date:   Sat Nov 22 11:26:08 2025 +0700
+
+    Menambahkan AppRoutes dan AppRouteGenerator untuk navigasi aplikasi
+
+[33mcommit 36e0a02642f3137c4fcccc9cfe2b1713d1ca701f[m
+Author: Sponscar <panji.sabilillah23@student.uisi.ac.id>
+Date:   Sat Nov 22 09:42:14 2025 +0700
+
+    Menambahkan struktur folder utama (config, data, pages, widgets, utils)
+
+[33mcommit 70b9145ef22d7bd84f3fe88214e05655f1b8cacf[m
+Author: Sponscar <panji.sabilillah23@student.uisi.ac.id>
+Date:   Sat Nov 22 09:14:18 2025 +0700
+
+    Commit awal - setup project flutter
