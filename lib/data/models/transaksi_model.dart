@@ -1,41 +1,65 @@
 import 'dart:convert';
 
 class TransaksiModel {
-  final String id;
-  final String obatId;
+  final String idTransaksi;
+  final String idObat;
   final String namaObat;
+  final String namaPembeli;
   final int jumlah;
+  final int hargaSatuan;
   final int totalHarga;
   final String tanggal;
+  final String metodePembelian;
+  final String? nomorResep;
+  final String status; // selesai / dibatalkan
+  final String? catatan;
 
   TransaksiModel({
-    required this.id,
-    required this.obatId,
+    required this.idTransaksi,
+    required this.idObat,
     required this.namaObat,
+    required this.namaPembeli,
     required this.jumlah,
+    required this.hargaSatuan,
     required this.totalHarga,
     required this.tanggal,
+    required this.metodePembelian,
+    this.nomorResep,
+    required this.status,
+    this.catatan,
   });
 
   factory TransaksiModel.fromMap(Map<String, dynamic> map) {
     return TransaksiModel(
-      id: map['id'],
-      obatId: map['obatId'],
-      namaObat: map['namaObat'],
-      jumlah: map['jumlah'],
-      totalHarga: map['totalHarga'],
-      tanggal: map['tanggal'],
+      idTransaksi: map['idTransaksi'] ?? '',
+      idObat: map['idObat'] ?? '',
+      namaObat: map['namaObat'] ?? '',
+      namaPembeli: map['namaPembeli'] ?? '',
+      jumlah: map['jumlah'] ?? 0,
+      hargaSatuan: map['hargaSatuan'] ?? 0,
+      totalHarga: map['totalHarga'] ?? 0,
+      tanggal: map['tanggal'] ?? '',
+      metodePembelian: map['metodePembelian'] ?? 'langsung',
+      nomorResep: map['nomorResep'],
+      status: map['status'] ?? 'selesai',
+      catatan: map['catatan'],
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'id': id,
-      'obatId': obatId,
+      'idTransaksi': idTransaksi,
+      'idObat': idObat,
       'namaObat': namaObat,
+      'namaPembeli': namaPembeli,
       'jumlah': jumlah,
+      'hargaSatuan': hargaSatuan,
       'totalHarga': totalHarga,
       'tanggal': tanggal,
+      'metodePembelian': metodePembelian,
+      'nomorResep': nomorResep,
+      'status': status,
+      'catatan': catatan,
     };
   }
 
@@ -43,5 +67,7 @@ class TransaksiModel {
     return TransaksiModel.fromMap(jsonDecode(json));
   }
 
-  String toJson() => jsonEncode(toMap());
+  String toJson() {
+    return jsonEncode(toMap());
+  }
 }

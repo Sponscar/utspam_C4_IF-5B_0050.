@@ -12,6 +12,7 @@ class DaftarObatPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Daftar Obat"),
+        foregroundColor: Colors.white,
         backgroundColor: Colors.blue.shade700,
       ),
       backgroundColor: const Color(0xffE3F2FD),
@@ -92,6 +93,7 @@ class DaftarObatPage extends StatelessWidget {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
+                      foregroundColor: Colors.white,
                     ),
                     child: const Text("Beli"),
                   ),

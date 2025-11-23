@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:aplikasi_apotek/config/app_routes.dart';
-import 'package:aplikasi_apotek/data/datasource/local_user.dart';
-import 'package:aplikasi_apotek/data/dummy/dummy_obat.dart';
-import 'package:aplikasi_apotek/data/models/obat_model.dart';
+import 'package:flutter/material.dart'; 
+import '../../../data/datasource/local_user.dart';
+import '../../../config/app_routes.dart';
+import '../../../data/dummy/dummy_obat.dart';
+import '../../../data/models/obat_model.dart';
+import '../../../utils/helpers.dart';  // 🔥 import helpers
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -29,251 +30,249 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final List<ObatModel> rekomendasiObat = DummyObat.dataObat;
-
     return Scaffold(
-      backgroundColor: Colors.blue.shade50,
+      backgroundColor: const Color(0xffE3F2FD),
+
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // =======================
-                // HEADER USER
-                // =======================
-                Text(
-                  "Halo, $namaUser 👋",
-                  style: TextStyle(
-                    fontSize: 24,
-                    color: Colors.blue.shade700,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  "Selamat Datang di Go-Healthy",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.blue.shade600,
-                  ),
-                ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const SizedBox(height: 10),
 
-                const SizedBox(height: 25),
+              Text(
+                "Halo, $namaUser 👋",
+                style: TextStyle(
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
+                ),
+              ),
 
-                // =======================
-                // MENU UTAMA
-                // =======================
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    _menuItem(
-                      icon: Icons.medical_services_rounded,
-                      title: "Beli Obat",
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.pembelian,
-                      ),
-                    ),
-                    _menuItem(
-                      icon: Icons.receipt_long_rounded,
-                      title: "Riwayat",
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.riwayat,
-                      ),
-                    ),
-                    _menuItem(
-                      icon: Icons.person_rounded,
-                      title: "Profil",
-                      onTap: () => Navigator.pushNamed(
-                        context,
-                        AppRoutes.profile,
-                      ),
-                    ),
-                    _menuItem(
-                      icon: Icons.logout_rounded,
-                      title: "Logout",
-                      onTap: () async {
+              const SizedBox(height: 4),
+
+              Text(
+                "Selamat Datang di Go-Healthy",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.blue.shade700,
+                ),
+              ),
+
+              const SizedBox(height: 25),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _menuButton(
+                    icon: Icons.medical_services_outlined,
+                    label: "Beli Obat",
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.daftarObat),
+                  ),
+                  _menuButton(
+                    icon: Icons.receipt_long,
+                    label: "Riwayat",
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.riwayat),
+                  ),
+                  _menuButton(
+                    icon: Icons.person,
+                    label: "Profil",
+                    onTap: () =>
+                        Navigator.pushNamed(context, AppRoutes.profile),
+                  ),
+
+                  // 🔥 LOGOUT + KONFIRMASI
+                  _menuButton(
+                    icon: Icons.logout,
+                    label: "Logout",
+                    onTap: () async {
+                      final confirm = await showDialog<bool>(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            title: const Text("Konfirmasi Logout"),
+                            content: const Text(
+                                "Apakah kamu yakin ingin keluar dari akun?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, false),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.blue,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text("Batal"),
+                              ),
+                              ElevatedButton(
+                                onPressed: () =>
+                                    Navigator.pop(context, true),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  foregroundColor: Colors.white,
+                                ),
+                                child: const Text("Logout"),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+
+                      if (confirm == true) {
                         await LocalUser.logout();
                         if (!mounted) return;
                         Navigator.pushReplacementNamed(
                           context,
                           AppRoutes.login,
                         );
-                      },
-                    ),
-                  ],
-                ),
-
-                const SizedBox(height: 30),
-
-                // =======================
-                // REKOMENDASI OBAT
-                // =======================
-                Text(
-                  "Rekomendasi Obat",
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.blue.shade700,
-                    fontWeight: FontWeight.w600,
+                      }
+                    },
                   ),
+                ],
+              ),
+
+              const SizedBox(height: 30),
+
+              Text(
+                "Rekomendasi Obat",
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.blue.shade800,
                 ),
+              ),
 
-                const SizedBox(height: 15),
+              const SizedBox(height: 15),
 
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: rekomendasiObat.length,
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    mainAxisExtent: 240,
-                    crossAxisSpacing: 10,
-                    mainAxisSpacing: 10,
-                  ),
-                  itemBuilder: (context, index) {
-                    final obat = rekomendasiObat[index];
-
-                    return _obatCard(obat, context);
-                  },
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: DummyObat.dataObat.length,
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.63,
+                  crossAxisSpacing: 12,
+                  mainAxisSpacing: 12,
                 ),
-              ],
-            ),
+                itemBuilder: (context, index) {
+                  ObatModel obat = DummyObat.dataObat[index];
+                  return _obatCard(obat, context);
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  // ========================================================
-  // WIDGET: MENU UTAMA
-  // ========================================================
-  Widget _menuItem({
+  Widget _menuButton({
     required IconData icon,
-    required String title,
+    required String label,
     required VoidCallback onTap,
   }) {
-    return InkWell(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blue.shade100,
-                  blurRadius: 6,
-                  offset: const Offset(0, 3),
-                ),
-              ],
-            ),
-            child: Icon(
-              icon,
-              size: 30,
-              color: Colors.blue.shade700,
-            ),
+    return Column(
+      children: [
+        InkWell(
+          borderRadius: BorderRadius.circular(50),
+          onTap: onTap,
+          child: CircleAvatar(
+            radius: 32,
+            backgroundColor: Colors.white,
+            child: Icon(icon, size: 30, color: Colors.blue.shade700),
           ),
-          const SizedBox(height: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.blue.shade700,
-              fontWeight: FontWeight.w500,
-            ),
-          )
-        ],
-      ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          label,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.blue.shade700,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 
-  // ========================================================
-  // WIDGET: CARD OBAT
-  // ========================================================
   Widget _obatCard(ObatModel obat, BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blue.shade100,
-            blurRadius: 6,
-            offset: const Offset(0, 3),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // GAMBAR OBAT
-          ClipRRect(
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(14)),
-            child: Image.asset(
-              obat.gambar,
-              height: 110,
-              width: double.infinity,
-              fit: BoxFit.cover,
+          Expanded(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: Image.asset(
+                obat.gambar,
+                fit: BoxFit.cover,
+                errorBuilder: (_, __, ___) => const Center(
+                  child: Icon(Icons.image_not_supported, size: 40),
+                ),
+              ),
             ),
           ),
 
-          Padding(
-            padding: const EdgeInsets.all(10),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  obat.nama,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
+          const SizedBox(height: 10),
+
+          Text(
+            obat.nama,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+
+          Text(
+            obat.kategori,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.blue.shade600,
+            ),
+          ),
+
+          const SizedBox(height: 4),
+
+          Text(
+            Helpers.formatRupiah(obat.harga),
+            style: const TextStyle(
+              fontSize: 17,
+              fontWeight: FontWeight.bold,
+              color: Colors.green,
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(
+                  context,
+                  AppRoutes.pembelian,
+                  arguments: obat,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue.shade700,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30),
                 ),
-
-                const SizedBox(height: 4),
-
-                Text(
-                  obat.kategori,
-                  style: TextStyle(
-                    color: Colors.blue.shade600,
-                    fontSize: 13,
-                  ),
-                ),
-
-                const SizedBox(height: 6),
-
-                Text(
-                  "Rp ${obat.harga}",
-                  style: TextStyle(
-                    color: Colors.green.shade700,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamed(context, AppRoutes.pembelian,
-                          arguments: obat);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue.shade700,
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                    ),
-                    child: const Text("Beli"),
-                  ),
-                )
-              ],
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                foregroundColor: Colors.white,
+              ),
+              child: const Text("Beli"),
             ),
           ),
         ],

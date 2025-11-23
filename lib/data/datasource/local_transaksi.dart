@@ -3,61 +3,63 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../models/transaksi_model.dart';
 
 class LocalTransaksi {
-  static const String keyTransaksi = "list_transaksi";
+  static const String transaksiKey = 'transaksi_data';
 
-  /// Simpan transaksi baru
-  static Future<void> addTransaksi(TransaksiModel transaksi) async {
+  /// AMBIL SEMUA TRANSAKSI
+  static Future<List<TransaksiModel>> getTransaksiList() async {
     final prefs = await SharedPreferences.getInstance();
+    final jsonString = prefs.getString(transaksiKey);
 
-    // Ambil list lama
-    final data = prefs.getStringList(keyTransaksi) ?? [];
+    if (jsonString == null) return [];
 
-    // Tambahkan transaksi baru (dalam bentuk JSON)
-    data.add(transaksi.toJson());
+    List decoded = jsonDecode(jsonString);
 
-    await prefs.setStringList(keyTransaksi, data);
+    return decoded
+        .map((map) => TransaksiModel.fromMap(map))
+        .toList();
   }
 
-  /// Ambil semua transaksi
-  static Future<List<TransaksiModel>> getTransaksi() async {
+  /// SIMPAN LIST TRANSAKSI
+  static Future<void> _saveTransaksiList(List<TransaksiModel> list) async {
     final prefs = await SharedPreferences.getInstance();
+    final listMap = list.map((t) => t.toMap()).toList();
 
-    final list = prefs.getStringList(keyTransaksi) ?? [];
-
-    return list.map((e) => TransaksiModel.fromJson(e)).toList();
+    prefs.setString(transaksiKey, jsonEncode(listMap));
   }
 
-  /// Hapus transaksi berdasarkan id
-  static Future<void> deleteTransaksi(String id) async {
-    final prefs = await SharedPreferences.getInstance();
+  /// TAMBAH TRANSAKSI BARU
+  static Future<void> tambahTransaksi(TransaksiModel transaksi) async {
+    List<TransaksiModel> list = await getTransaksiList();
+    list.add(transaksi);
 
-    final list = prefs.getStringList(keyTransaksi) ?? [];
-
-    final newList = list.where((item) {
-      final transaksi = TransaksiModel.fromJson(item);
-      return transaksi.id != id;
-    }).toList();
-
-    await prefs.setStringList(keyTransaksi, newList);
+    await _saveTransaksiList(list);
   }
 
-  /// Update transaksi berdasarkan id
-  static Future<void> updateTransaksi(TransaksiModel newData) async {
-    final prefs = await SharedPreferences.getInstance();
+  /// EDIT TRANSAKSI
+  static Future<void> editTransaksi(TransaksiModel updatedTransaksi) async {
+    List<TransaksiModel> list = await getTransaksiList();
 
-    final list = prefs.getStringList(keyTransaksi) ?? [];
+    final index =
+        list.indexWhere((t) => t.idTransaksi == updatedTransaksi.idTransaksi);
 
-    final updatedList = list.map((item) {
-      final transaksi = TransaksiModel.fromJson(item);
-      return transaksi.id == newData.id ? newData.toJson() : item;
-    }).toList();
-
-    await prefs.setStringList(keyTransaksi, updatedList);
+    if (index != -1) {
+      list[index] = updatedTransaksi;
+      await _saveTransaksiList(list);
+    }
   }
 
-  /// Hapus semua transaksi (opsional)
-  static Future<void> clear() async {
+  /// HAPUS TRANSAKSI
+  static Future<void> hapusTransaksi(String idTransaksi) async {
+    List<TransaksiModel> list = await getTransaksiList();
+
+    list.removeWhere((t) => t.idTransaksi == idTransaksi);
+
+    await _saveTransaksiList(list);
+  }
+
+  /// HAPUS SEMUA TRANSAKSI (opsional)
+  static Future<void> clearTransaksi() async {
     final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(keyTransaksi);
+    await prefs.remove(transaksiKey);
   }
 }

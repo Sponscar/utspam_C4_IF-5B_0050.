@@ -1,3 +1,4 @@
+import 'package:aplikasi_apotek/pages/pembelian/daftar_obat_page.dart';
 import 'package:flutter/material.dart';
 
 // Import semua halaman
@@ -19,6 +20,7 @@ class AppRoutes {
   static const detail = '/detail';
   static const editTransaksi = '/edit-transaksi';
   static const profile = '/profile';
+  static const daftarObat = '/daftar-obat';
 }
 
 class AppRouteGenerator {
@@ -34,25 +36,35 @@ class AppRouteGenerator {
         return MaterialPageRoute(builder: (_) => const HomePage());
 
       case AppRoutes.pembelian:
-        return MaterialPageRoute(builder: (_) => const FormPembelianPage());
+        return MaterialPageRoute(
+          builder: (_) => FormPembelianPage(),
+          settings: settings,
+        );
+
+      case AppRoutes.daftarObat:
+        return MaterialPageRoute(builder: (_) => const DaftarObatPage());
 
       case AppRoutes.riwayat:
-        return MaterialPageRoute(builder: (_) => const RiwayatPage());
+        return MaterialPageRoute(builder: (_) => RiwayatPage());
 
       case AppRoutes.detail:
-        return MaterialPageRoute(builder: (_) => const DetailPage());
+        return MaterialPageRoute(
+          builder: (_) => const DetailPage(),
+          settings: settings,
+      );
 
       case AppRoutes.editTransaksi:
-        return MaterialPageRoute(builder: (_) => const EditTransaksiPage());
+        return MaterialPageRoute(
+          builder: (_) => const EditTransaksiPage(),
+          settings: settings,
+        );
 
       case AppRoutes.profile:
         return MaterialPageRoute(builder: (_) => const ProfilePage());
 
       default:
-        return MaterialPageRoute(
-          builder: (_) => const LoginPage(),
-      );
-
+        return MaterialPageRoute(builder: (_) => const LoginPage());
     }
   }
 }
+
